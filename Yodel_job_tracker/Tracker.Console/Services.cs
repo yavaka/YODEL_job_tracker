@@ -2,15 +2,26 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Text;
+    using static Tracker.Console.Enum;
 
     public static class Services
     {
+        private const int LEFT_CURSOR_POSITION = 10;
+        private const int TOP_CURSOR_POSITION = 5;
+
+        private static Day Day = null;
+
         public static void Commands()
         {
+            Console.WriteLine();
+            Console.WriteLine("     YODEL job tracker v1.1");
+            Console.WriteLine();
+            Console.WriteLine("     powered by YAVAKA SOLUTIONS");
+            Console.WriteLine();
             while (true)
             {
-                Console.WriteLine("Enter command!");
                 Console.Write("=> ");
                 var command = Console.ReadLine();
 
@@ -20,8 +31,12 @@
                         DayDetails();
                         break;
 
-                    case "find day":
-                        FindDay();
+                    case "calendar":
+                        WholeWeekByDates();
+                        break;
+
+                    case "help":
+                        ListCommands();
                         break;
 
                     case "close":
@@ -29,69 +44,82 @@
                         break;
 
                     default:
-                        throw new ArgumentException("Command not found!");
+                        Console.WriteLine("Command not found!");
+                        break;
                 }
             }
-
         }
 
-        private static void FindDay()
+        //Help command
+        private static void ListCommands()
         {
-            var date = ConvertDate();
-            Console.WriteLine(day.Miles);
+            Console.WriteLine("1. Add day");
+            Console.WriteLine("2. Calendar");
+            Console.WriteLine("3. Close");
         }
 
-        private static Day day = null;
+        //TODO Get and list whole info for every day
+        //Calendar command
+        private static void WholeWeekByDates()
+        {
+            Console.Clear();
+            var date = ConvertDate();
 
-        //Add day details
+            var weekDay = date.DayOfWeek;
+
+            int nextDay = 0;
+            TimeSpan duration = new TimeSpan(0, 0, 0, 0, 0);
+            for (int day = 0; day <= 6; day++)
+            {
+                DateTime startOfWeek = date.AddDays(
+                 (int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek -
+                 (int)date.DayOfWeek);
+
+                duration = new TimeSpan(nextDay, 0, 0, 0, 0);
+                startOfWeek = startOfWeek.Add(duration);
+                Console.WriteLine(startOfWeek.ToString("dddd, dd MMMM yyyy"));
+                nextDay++;
+            }
+        }
+
+        //Add day details command
         private static void DayDetails()
         {
             Console.Clear();
-            Console.Write($"date : ");
+            Console.WriteLine("     Add Day");
+
             var date = ConvertDate();
-            Console.WriteLine();
 
             Console.Write($"parcels : ");
             var parcels = int.Parse(Console.ReadLine());
-            Console.WriteLine();
 
             Console.Write($"stops : ");
             var stops = int.Parse(Console.ReadLine());
-            Console.WriteLine();
 
             Console.Write($"collections : ");
             var collections = int.Parse(Console.ReadLine());
-            Console.WriteLine();
 
             Console.Write($"returned : ");
             var returned = int.Parse(Console.ReadLine());
-            Console.WriteLine();
 
             Console.Write($"manual parcels : ");
             var manualParcels = int.Parse(Console.ReadLine());
-            Console.WriteLine();
 
             Console.Write($"damages : ");
             var damages = Console.ReadLine();
-            Console.WriteLine();
 
             Console.Write($"bonus : ");
             var bonus = Console.ReadLine();
-            Console.WriteLine();
 
             Console.Write($"miles : ");
             var miles = double.Parse(Console.ReadLine());
-            Console.WriteLine();
 
             Console.Write($"note : ");
             var note = Console.ReadLine();
-            Console.WriteLine();
 
-            Console.Write($"day off : ");
             var dayOff = DayOff();
-            Console.WriteLine();
 
-            day = new Day()
+            Day = new Day()
             {
                 Date = date,
                 Parcels = parcels,
@@ -106,22 +134,44 @@
                 Note = note,
                 DayOff = dayOff
             };
+            Console.WriteLine("Day has been added.");
         }
 
-        private static bool DayOff()
+        private static DayOff DayOff()
         {
+            Console.Write($"day off y/n : ");
             var input = Console.ReadLine();
-            if (input.ToLower() == "yes")
+            switch (input.ToLower())
             {
-                return true;
+                case "y":
+                    return Enum.DayOff.yes;
+                case "n":
+                    return Enum.DayOff.no;
+                default:
+                    DayDetails();
+                    break;
             }
-            return false;
+            return Enum.DayOff.no;
         }
 
         private static DateTime ConvertDate()
         {
+            Console.Write($"date dd/mm/yyyy : ");
             var input = Console.ReadLine();
-            return Convert.ToDateTime(input);
+
+            DateTime date;
+            bool isDateValid = DateTime.TryParseExact(
+                input,
+                "dd/MM/yyyy",
+                CultureInfo.InvariantCulture,
+                style: DateTimeStyles.None,
+                result: out date);
+
+            if (!isDateValid)
+            {
+                Commands();
+            }
+            return date;
         }
     }
 }

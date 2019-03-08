@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static Tracker.Console.Enum;
 
 namespace Tracker.Console
 {
@@ -27,7 +28,5 @@ namespace Tracker.Console
         double Miles { get; set; }
 
         string Note { get; set; }
-        //TODO Enum yes no 
-        bool DayOff { get; set; }
     }
 }

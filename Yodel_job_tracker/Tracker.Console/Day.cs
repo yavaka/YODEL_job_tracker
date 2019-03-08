@@ -1,6 +1,8 @@
 ﻿namespace Tracker.Console
 {
     using System;
+    using static Tracker.Console.Enum;
+
     //TODO Annotations
     public class Day : IDay
     {
@@ -26,7 +28,7 @@
 
         public string Note{ get; set; }
 
-        public bool DayOff{ get; set; }
+        public DayOff DayOff { get; set; }
 
    }
 }
