@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tracker.Console
+﻿namespace Tracker.Console.Models
 {
    public static class Enum
     {
@@ -11,7 +7,5 @@ namespace Tracker.Console
             yes,
             no
         }
-
-
     }
 }

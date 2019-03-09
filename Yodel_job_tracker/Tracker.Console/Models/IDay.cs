@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static Tracker.Console.Enum;
 
-namespace Tracker.Console
+namespace Tracker.Console.Models
 {
     interface IDay
     {
@@ -18,8 +15,6 @@ namespace Tracker.Console
         int Returned { get; set; }
 
         int ManualParcels { get; set; }
-
-        byte[] SummaryImage { get; set; }
 
         string Damages { get; set; }
 
