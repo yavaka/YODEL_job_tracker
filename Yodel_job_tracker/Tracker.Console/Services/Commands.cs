@@ -3,18 +3,26 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.IO;
+    using System.Linq;
     using System.Text;
+    using System.Xml;
+    using System.Xml.Linq;
     using Models;
     using static Tracker.Console.Models.Enum;
 
-
+    //TODO Check where file is not closed type using() body
     public static class Commands
     {
         private static Day Day = null;
+        private const string PATH = @"../../../Data/days_details.xml";
 
         //All commands
         public static void AllCommands()
         {
+            //Check is XML file exists
+            IsXmlFileExist();
+
             Console.WriteLine();
             Console.WriteLine("     YODEL job tracker v1.1");
             Console.WriteLine();
@@ -35,7 +43,17 @@
                         WholeWeekByDates();
                         break;
 
-                        //TODO Money for the whole week by given date
+                    //TODO Money for the whole week by given date
+
+                    //TODO Remove day by date
+                    //case "remove day":
+                    //    RemoveDayByDate();
+                    //    break;
+
+                    //TODO Remove all days
+                    case "remove all days":
+                        RemoveAllDays();
+                        break;
 
                     case "help":
                         ListCommands();
@@ -52,19 +70,44 @@
             }
         }
 
+        #region Commands
+
+        ////TODO test is day removed
+        ////Remove day command
+        //private static void RemoveDayByDate()
+        //{
+        //    //Send inputed date from the user
+        //    //Remove day
+        //    XmlReaderWriter.RemoveDayByDate(ConvertDate());
+
+        //    Console.WriteLine("Day has been removed!");
+        //    Console.WriteLine();
+        //}
+
+        //Remove all days command
+
+        private static void RemoveAllDays()
+        {
+            XmlReaderWriter.DeleteXmlFile();
+            Console.WriteLine("XML file has been deleted!");
+
+            //Check is XML file exists if not create one
+            IsXmlFileExist();
+        }
+
         //Help command
         private static void ListCommands()
         {
             Console.WriteLine("1. Add day");
             Console.WriteLine("2. Calendar");
-            Console.WriteLine("3. Close");
+            Console.WriteLine("3. Remove all days");
+            Console.WriteLine("4. Close");
         }
 
         //Calendar command
         private static void WholeWeekByDates()
         {
-            Console.Clear();
-            var date = ConvertDate();
+            var date = Date();
 
             var weekDay = date.DayOfWeek;
             int nextDay = 0;
@@ -92,7 +135,6 @@
         //Add day details command
         private static void DayDetails()
         {
-            Console.Clear();
             Console.WriteLine("     Add Day");
 
             var dayOff = DayOff();
@@ -100,10 +142,11 @@
             //Check is day off
             if (dayOff.ToString() == "no")
             {
-                var date = ConvertDate();
+                var date = Date();
                 if (IsDateExist(date))
                 {
-                    DayDetails();
+                    Console.WriteLine("Date already exists!");
+                    AllCommands();
                 }
 
                 Console.Write($"parcels : ");
@@ -133,17 +176,16 @@
                 Console.Write($"note : ");
                 var note = Console.ReadLine();
 
-                AddDay(date, parcels,stops,collections,returned,manualParcels,damages,bonus,miles,note,dayOff);
+                AddDay(date, parcels, stops, collections, returned, manualParcels, damages, bonus, miles, note, dayOff);
             }
             else
             {
-                var date = ConvertDate();
-                //TODO is date exist in XML file
-                //TODO Test is working proper
+                var date = Date();
                 if (IsDateExist(date))
                 {
-                    DayDetails();
+                    AllCommands();
                 }
+
                 Console.Write($"note : ");
                 var note = Console.ReadLine();
 
@@ -161,21 +203,35 @@
             }
         }
 
+        #endregion
+
+        #region Helpers
+
+        private static void IsXmlFileExist()
+        {
+            if (!File.Exists(PATH))
+            {
+                Day = null;
+                //Populate with data here if necessary, then save to make sure it exists
+                XmlReaderWriter.AddDay(Day);
+            }
+        }
         private static bool IsDateExist(DateTime date)
         {
-            var allDays = GetDaysDetails(date);
-            foreach (var day in allDays.Days)
+            var allDays = XmlReaderWriter.Read();
+            var dayDetails = allDays.Days.FirstOrDefault(d => d.Date == date);
+            if (dayDetails == null)
             {
-                if (day.Date == date)
-                {
-                    return true;
-                }
+                return false;
+            }
+            else if (dayDetails != null)
+            {
+                Console.WriteLine("Date already exists!");
+                return true;
             }
             return false;
         }
 
-
-        //Helpers
         private static AllDays GetDaysDetails(DateTime date)
         {
             var allDays = XmlReaderWriter.Read();
@@ -183,7 +239,7 @@
             foreach (var day in allDays.Days)
             {
                 //TODO If dayOff is y do not list whole data
-                if (date == day.Date)
+                if (date == day.Date && day.DayOff.ToString() == "no")
                 {
                     Console.WriteLine($"Parcels : {day.Parcels}");
                     Console.WriteLine($"Stops : {day.Stops}");
@@ -194,14 +250,20 @@
                     Console.WriteLine($"Damages : {day.Damages}");
                     Console.WriteLine($"Bonus : {day.Bonus}");
                     Console.WriteLine($"Note : {day.Note}");
-                } 
+
+                }
+                else if (day == null) { }
+                else if (date == day.Date && day.DayOff.ToString() == "yes")
+                {
+                    Console.WriteLine($"Note : {day.Note}");
+                }
             }
             return allDays;
         }
         private static void AddDay(DateTime date, int parcels, int stops, int collections, int returned, int manualParcels,
             string damages, string bonus, double miles, string note, DayOff dayOff)
         {
-            Day = new Day()
+            var day = new Day()
             {
                 Date = date,
                 Parcels = parcels,
@@ -217,14 +279,14 @@
             };
 
             //Add day in XML file
-            AddDayInXml();
-
+            AddDayInXml(day);
         }
-        private static void AddDayInXml()
+        private static void AddDayInXml(Day day)
         {
-            XmlReaderWriter.Write(Day);
+            XmlReaderWriter.Write(day);
             Console.WriteLine("Day has been added.");
         }
+
         private static DayOff DayOff()
         {
             Console.Write($"day off y/n : ");
@@ -236,16 +298,21 @@
                 case "n":
                     return Models.Enum.DayOff.no;
                 default:
+                    Console.WriteLine("Invalid input only 'y' or 'n'!");
                     DayDetails();
                     break;
             }
             return Models.Enum.DayOff.no;
         }
-        private static DateTime ConvertDate()
+        private static DateTime Date()
         {
             Console.Write($"date dd/mm/yyyy : ");
-            var input = Console.ReadLine();
 
+            var input = Console.ReadLine();
+            return ConvertDate(input);
+        }
+        private static DateTime ConvertDate(string input)
+        {
             DateTime date;
             bool isDateValid = DateTime.TryParseExact(
                 input,
@@ -256,11 +323,13 @@
 
             if (!isDateValid)
             {
+                Console.WriteLine("Invalid input!");
                 AllCommands();
             }
 
             return date;
         }
-        
+
+        #endregion
     }
 }

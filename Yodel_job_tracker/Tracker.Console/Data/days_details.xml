@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<AllDays xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Day Date="2019-03-07T00:00:00" Parcels="1" Stops="2" Collections="3" Returned="4" ManualParcels="5" Damages="67" Bonus="7" Miles="8" Note="9" DayOff="no" />
+  <Day Date="2019-03-08T00:00:00" Parcels="1" Stops="2" Collections="3" Returned="4" ManualParcels="5" Damages="67" Bonus="7" Miles="8" Note="9" DayOff="no" />
+  <Day Date="2019-03-09T00:00:00" Parcels="0" Stops="0" Collections="0" Returned="0" ManualParcels="0" Damages="none" Bonus="none" Miles="0" Note="no" DayOff="yes" />
+  <Day Date="2019-03-10T00:00:00" Parcels="0" Stops="0" Collections="0" Returned="0" ManualParcels="0" Damages="none" Bonus="none" Miles="0" Note="no" DayOff="yes" />
+  <Day Date="2019-03-11T00:00:00" Parcels="0" Stops="0" Collections="0" Returned="0" ManualParcels="0" Damages="none" Bonus="none" Miles="0" Note="no" DayOff="yes" />
+  <Day Date="2019-03-12T00:00:00" Parcels="0" Stops="0" Collections="0" Returned="0" ManualParcels="0" Damages="none" Bonus="none" Miles="0" Note="no" DayOff="yes" />
+  <Day Date="2019-03-13T00:00:00" Parcels="0" Stops="0" Collections="0" Returned="0" ManualParcels="0" Damages="0" Bonus="0" Miles="0" Note="0" DayOff="no" />
+</AllDays>
