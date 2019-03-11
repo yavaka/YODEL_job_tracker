@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Console", "Tracker.Console\Tracker.Console.csproj", "{EF07F5B7-7C65-4311-ADBF-5CDFC24CB589}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpApp", "HelpApp\HelpApp.csproj", "{1959FEA3-ED3E-46F4-80C1-1EA770D7CD96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelpApp", "HelpApp\HelpApp.csproj", "{1959FEA3-ED3E-46F4-80C1-1EA770D7CD96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

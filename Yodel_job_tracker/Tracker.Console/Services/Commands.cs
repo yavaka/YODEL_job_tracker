@@ -15,11 +15,14 @@
     public static class Commands
     {
         private static Day Day = null;
-        private const string PATH = @"../../../Data/days_details.xml";
+        private const string FILENAME = @"days_details.xml";
 
         //All commands
         public static void AllCommands()
         {
+            //Set current directory to be Data folder
+            SetCurrentDirectory.Run();
+
             //Check is XML file exists
             IsXmlFileExist();
 
@@ -209,7 +212,7 @@
 
         private static void IsXmlFileExist()
         {
-            if (!File.Exists(PATH))
+            if (!File.Exists(FILENAME))
             {
                 Day = null;
                 //Populate with data here if necessary, then save to make sure it exists

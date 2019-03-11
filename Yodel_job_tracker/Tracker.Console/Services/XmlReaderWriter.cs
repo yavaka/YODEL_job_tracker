@@ -13,7 +13,7 @@
 
     public class XmlReaderWriter
     {
-        private const string PATH = @"../../../Data/days_details.xml";
+        private const string FILENAME = @"days_details.xml";
         private static AllDays AllDays = new AllDays();
         private static Day Day = new Day();
 
@@ -31,7 +31,7 @@
         public static AllDays Read()
         {
             //Open XML file reader
-            using (FileStream stream = File.OpenRead(PATH))
+            using (FileStream stream = File.OpenRead(FILENAME))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(AllDays));
 
@@ -41,7 +41,7 @@
         }
 
         //Delete XML file    
-        public static void DeleteXmlFile() => File.Delete(PATH);
+        public static void DeleteXmlFile() => File.Delete(FILENAME);
 
         ////Remove day by date
         //public static void RemoveDayByDate(DateTime date)
@@ -67,7 +67,7 @@
         {
             AllDays.Days.Add(day);
             //Open XML file writer
-            using (Stream stream = File.OpenWrite(PATH))
+            using (Stream stream = File.OpenWrite(FILENAME))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(AllDays));
                 serializer.Serialize(stream, AllDays);
